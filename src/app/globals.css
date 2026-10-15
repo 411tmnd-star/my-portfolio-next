@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  /* Dark — "Board" (default) */
+  --color-ground: #0B0E12;
+  --color-panel: #161B22;
+  --color-substrate: #272F36;
+  --color-substrate-edge: #3A4A55;
+  --color-copper: #B87333;
+  --color-copper-highlight: #D99A5B;
+  --color-cyan: #35E0F2;
+  --color-cyan-deep: #0E7C8C;
+  --color-silkscreen: #E6EDF3;
+  --color-muted: #8B98A5;
+  --color-muted-small: #A3AEBA;
+
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* Light — "Clay" (opt-in via data-theme="light" on <html>) */
+:root[data-theme="light"] {
+  --color-ground: #F4F4F2;
+  --color-panel: #D8D8D8;
+  --color-substrate: #B9C2B9;
+  --color-substrate-edge: #7A8380;
+  --color-copper: #C4703A;
+  --color-copper-highlight: #8A4A22;
+  --color-cyan: #0FA3B1;
+  --color-cyan-deep: #0FA3B1;
+  --color-silkscreen: #272F36;
+  --color-muted: #55605C;
+  --color-muted-small: #3F4A46;
+}
+
+html,
+body {
+  background: var(--color-ground);
+  color: var(--color-silkscreen);
+  font-family: var(--font-display);
+}
+
+.font-mono-brand {
+  font-family: var(--font-mono);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
