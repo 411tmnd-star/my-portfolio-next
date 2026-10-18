@@ -28,7 +28,7 @@ on its own branch → Vercel preview → PR.
 - **Fix the thumb before export** (QA-003 — the wave hand is the close-up).
 - **Loop section = a Blender reel of the work.** Hidden until the encodes exist (`REEL.ready` in `src/components/sections/Loop.tsx`).
 
-Interface contract for the 3D asset: [`hero-3d/HERO-3D-CONTRACT.md`](hero-3d/HERO-3D-CONTRACT.md).
+Interface contract for the 3D asset: [`hero-3d/HERO-3D-CONTRACT.md`](hero-3d/HERO-3D-CONTRACT.md). Blender phases are issued one at a time as `hero-3d/W*.md`; the first is [`W0-thumb-inspect.md`](hero-3d/W0-thumb-inspect.md).
 
 ## What step 1 changed (for review)
 
