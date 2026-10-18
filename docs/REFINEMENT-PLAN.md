@@ -16,6 +16,7 @@ on its own branch → Vercel preview → PR.
 | 2 | Blender workflows: W0 fix the misplaced thumb (QA-003), W1 web export (`.glb` + poster), W2 reel render | Claude Code + Blender MCP on the laptop, supervised from chat | Next |
 | 3 | 3D hero: poster → R3F humanoid swap, greeting on the visor, cursor look-at, mobile "Wake 411" tap | this repo | After W1 |
 | 4 | Scroll poses + the reel section (Blender reel of the work) | this repo | After W2 |
+| 4b | Lighting story, a separate "411 Lab" section (not the hero): five lights, scroll chapters as presets, the humanoid as the actor | this repo + Blender posters | After step 4 |
 | 5 | Switch Vercel to this repo; keep `/voltaedge.html` redirect | Vercel | After step 3 passes the budget |
 | — | Phase 2 polish: light/dark toggle, ecosystem motion, Process wipe with real renders | this repo | Later |
 
@@ -41,3 +42,15 @@ Interface contract for the 3D asset: [`hero-3d/HERO-3D-CONTRACT.md`](hero-3d/HER
 - ESLint 9 flat config (the old `.eslintrc.json` was ignored by ESLint 9, so `npm run lint` failed).
 - VoltaEdge app mockup now carries a visible "Design mockup — illustrative figures, not live data" caption.
 - Loop and Process are not mounted until real renders exist — no placeholders ship.
+
+## Lighting story (step 4b): the 411 story told with light
+
+Studied from an interactive film-lighting simulator (isometric wireframe set + camera view + control panel; creator @wheresryan22, credited in `SOURCE.md` when built; study files are kept privately, not in this repo). Original set, labels and styling; only the architecture is reused.
+
+- **Placement:** its own section, not the hero. The hero stays minimal poses and a fast first paint.
+- **Actor and light:** the humanoid is the actor (poses from the hero); the lights are the cinematography. The visor that says HELLO → 411 is the Practical light.
+- **Five lights, five 411 responsibilities:** Key = Knowledge and Provenance, Fill = Requirements and Relationships, Back = Workflows and Capabilities, Practical = Governance, Decisions and Execution, Flag (subtractive) = Verification, Delivery and Feedback.
+- **Scroll chapters as presets:** a dark room first (undiscovered demand); each chapter turns on one light and shows that responsibility; the end is "All on". Mapping of the seven 411 stages onto the presets is still to be decided.
+- **Map plus result:** an isometric map of the set (same orthographic formula as the earlier isometric work) beside the live camera view.
+- **Visitor controls:** at most 2–3 sliders; scroll does the rest. Mobile shows baked posters only.
+- **Blender now:** only the light-rig naming and per-preset posters in [`hero-3d/HERO-3D-CONTRACT.md`](hero-3d/HERO-3D-CONTRACT.md). Everything else waits for step 4b.

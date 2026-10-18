@@ -65,3 +65,12 @@ added on top of whatever clip is playing). Names must survive export unchanged.
    size within budget.
 4. Poster and the three.js view at frame 0 of `idle_breathe` line up when
    overlaid.
+
+## Light rig and preset posters (for step 4b, the lighting story)
+
+Not needed for step 3; add them while the Blender file is open so step 4b does not need another export round.
+
+- **Light rig names (Blender and three.js must match):** `LIGHT_Key`, `LIGHT_Fill`, `LIGHT_Back`, `LIGHT_Practical` (the visor emission), `FLAG_Cut` (a subtractive flag plane). Positions, colour temperature (K) and power are recorded in `export_report.json` next to the camera so R3F reproduces the rig.
+- **Presets, one poster each** from the web camera above: `night_interior`, `high_key`, `low_key_noir`, `golden_hour`. Output `poster_<preset>.webp` beside the main poster. They serve as mobile and reduced-motion fallbacks.
+- **Budget:** each preset poster stays within the main poster's size budget.
+- **Handoff addition:** the poster for each preset lines up with the three.js view of the same preset when overlaid, as the main poster does at frame 0.
