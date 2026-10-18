@@ -50,7 +50,16 @@ Studied from an interactive film-lighting simulator (isometric wireframe set + c
 - **Placement:** its own section, not the hero. The hero stays minimal poses and a fast first paint.
 - **Actor and light:** the humanoid is the actor (poses from the hero); the lights are the cinematography. The visor that says HELLO → 411 is the Practical light.
 - **Five lights, five 411 responsibilities:** Key = Knowledge and Provenance, Fill = Requirements and Relationships, Back = Workflows and Capabilities, Practical = Governance, Decisions and Execution, Flag (subtractive) = Verification, Delivery and Feedback.
-- **Scroll chapters as presets:** a dark room first (undiscovered demand); each chapter turns on one light and shows that responsibility; the end is "All on". Mapping of the seven 411 stages onto the presets is still to be decided.
+- **Scroll chapters as presets:** a dark room first (undiscovered demand); each chapter turns on one light and shows that responsibility; the end is "All on".
+
+  | Preset | 411 stages | Why |
+  |---|---|---|
+  | `night_interior` | Intake | Dark room, only the visor glows, first demand signals arrive |
+  | `low_key_noir` | Filter, Evidence and Analysis, Cross-reference | The investigation: hard contrast, the Flag cuts what is not proven |
+  | `golden_hour` | Your Decision, Execution and Verification | The warm human moment: decide, then build and verify |
+  | `high_key` | Outputs and Feedback | Everything lit and clear: finished work and the loop back |
+
+  The story closes on "All on". This grouping is for the lighting story only; it does not lock the 411 architecture.
 - **Map plus result:** an isometric map of the set (same orthographic formula as the earlier isometric work) beside the live camera view.
 - **Visitor controls:** at most 2–3 sliders; scroll does the rest. Mobile shows baked posters only.
 - **Blender now:** only the light-rig naming and per-preset posters in [`hero-3d/HERO-3D-CONTRACT.md`](hero-3d/HERO-3D-CONTRACT.md). Everything else waits for step 4b.
