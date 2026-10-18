@@ -1,14 +1,36 @@
+import { ABOUT } from "@/content/site";
+
+/** Renders **bold** spans from the content file without pulling in markdown. */
+function Rich({ text }: { text: string }) {
+  return (
+    <>
+      {text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+        part.startsWith("**") ? (
+          <strong key={i} className="text-[var(--color-silkscreen)]">
+            {part.slice(2, -2)}
+          </strong>
+        ) : (
+          <span key={i}>{part}</span>
+        ),
+      )}
+    </>
+  );
+}
+
 export default function About() {
   return (
-    <section id="about" className="mx-auto max-w-3xl px-6 py-24">
-      <h2 className="text-2xl font-semibold text-[var(--color-silkscreen)]">About</h2>
-      <p className="mt-4 text-[var(--color-muted)]">
-        Electrical Engineering student, web developer, UI/UX and 3D designer.
-        Every trace on this page routes at 45°, never 90° — the same rule
-        real PCB layouts follow, because right angles cost more board area
-        and route length, not signal integrity. That is the kind of detail
-        this page is built to prove.
-      </p>
+    <section id="about">
+      <div className="wrap">
+        <span className="section-label">{ABOUT.label}</span>
+        <h2 className="section-title">{ABOUT.title}</h2>
+        <div className="mb-[110px] max-w-[660px] text-[15px] text-[var(--color-muted)]">
+          {ABOUT.paragraphs.map((p) => (
+            <p key={p.slice(0, 24)} className="mb-4">
+              <Rich text={p} />
+            </p>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }

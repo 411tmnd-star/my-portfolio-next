@@ -1,97 +1,57 @@
 "use client";
 
-import { useState } from "react";
+import { useRef } from "react";
+import { HERO } from "@/content/site";
+import WhatsAppButton from "@/components/ui/WhatsAppButton";
+import HeroRobotSvg from "@/components/hero/HeroRobotSvg";
+import { useGreeting } from "@/components/hero/useGreeting";
 
 /**
- * §1 Hero — placeholder ring.
+ * §1 Hero — "Michael Ikhine, hire me", with 411 as what he's building.
  *
- * Reference-board decision (22 Sep 2026): show 4 nodes on the ring, all 8 in
- * §3 Ecosystem. See claude/411-reference-board.md for the reasoning.
- *
- * This is a DOM/CSS stand-in for the real hero: a closed trace loop lying in
- * the isometric board plane (NOT a tilted planetary orbit — see §D of the
- * reference board), with node hover/labels in DOM over the canvas. Swap the
- * center mark + ring for a real .glb in React Three Fiber once the KiCad/
- * Blender geometry exists; keep the DOM label layer as-is — §D found no 3D
- * implementation actually labels its nodes, DOM-over-canvas is the pattern.
+ * The stage on the right is where the 3D humanoid lands in step 3
+ * (docs/REFINEMENT-PLAN.md). Until then it holds the live site's approved
+ * SVG greeting, so the Next build matches production before the switch.
+ * Mobile: the robot sits above the copy and stays small, so "Start a
+ * project" is above the fold. Conversion outranks spectacle.
  */
-
-const NODES = [
-  { id: "aos", label: "411 AOS", sub: "agentic OS", angle: -90 },
-  { id: "market", label: "411 Market", sub: "voice storefront", angle: 0 },
-  { id: "live", label: "411 Live", sub: "real-time voice/video", angle: 90 },
-  { id: "energy", label: "Smart Energy", sub: "VoltaEdge · IoT", angle: 180 },
-];
-
-const RADIUS = 170;
-
 export default function Hero() {
-  const [active, setActive] = useState<string | null>(null);
+  const heroRef = useRef<HTMLElement>(null);
+  useGreeting(heroRef);
 
   return (
-    <section id="top" className="relative flex min-h-[90vh] flex-col items-center justify-center overflow-hidden px-6 py-24">
-      <div className="relative flex h-[420px] w-[420px] items-center justify-center">
-        {/* closed trace loop */}
-        <div
-          className="absolute inset-0 rounded-full border border-[var(--color-copper)]/40"
-          style={{ boxShadow: "0 0 40px -10px var(--color-copper)" }}
-        />
-
-        {/* center 411 mark */}
-        <div className="relative z-10 flex h-28 w-28 items-center justify-center rounded-2xl border border-[var(--color-copper)] bg-[var(--color-panel)] font-mono-brand text-2xl tracking-widest text-[var(--color-silkscreen)]">
-          411
+    <section
+      id="hero"
+      ref={heroRef}
+      className="hero relative overflow-hidden px-[max(16px,6vw)] pb-11 pt-6 sm:pb-14 sm:pt-11 lg:pb-[70px] lg:pt-[90px]"
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-[150px] -top-[200px] h-[500px] w-[500px] bg-[radial-gradient(circle,rgb(53_224_242/0.12),transparent_70%)]"
+      />
+      <div className="mx-auto grid max-w-[1100px] items-center gap-2.5 sm:gap-[18px] lg:grid-cols-[1.12fr_0.88fr] lg:gap-11">
+        <div>
+          <span className="hero-reveal mb-3.5 block font-mono-brand text-[12.5px] uppercase tracking-[0.12em] text-[var(--color-cyan)] sm:mb-5">
+            {HERO.eyebrow}
+          </span>
+          <h1 className="hero-reveal mb-4 max-w-[880px] text-[clamp(30px,8.2vw,36px)] font-bold leading-[1.15] tracking-tight [transition-delay:.08s] sm:mb-5 sm:text-[clamp(36px,5.6vw,54px)]">
+            {HERO.titleBefore}
+            <span className="text-[var(--color-cyan)]">{HERO.titleAccent}</span>
+            {HERO.titleAfter}
+          </h1>
+          <p className="hero-reveal mb-[26px] max-w-[680px] text-[15.5px] text-[var(--color-muted)] [transition-delay:.16s] sm:mb-[34px] sm:text-[16.5px]">
+            {HERO.sub}
+          </p>
+          <div className="hero-reveal flex flex-wrap gap-3.5 [transition-delay:.24s]">
+            <WhatsAppButton href={HERO.primary.href}>{HERO.primary.label}</WhatsAppButton>
+            <a href={HERO.secondary.href} className="btn btn-ghost">
+              {HERO.secondary.label}
+            </a>
+          </div>
         </div>
 
-        {/* nodes */}
-        {NODES.map((n) => {
-          const rad = (n.angle * Math.PI) / 180;
-          const x = Math.cos(rad) * RADIUS;
-          const y = Math.sin(rad) * RADIUS;
-          const isActive = active === n.id;
-          return (
-            <button
-              key={n.id}
-              onMouseEnter={() => setActive(n.id)}
-              onMouseLeave={() => setActive(null)}
-              onFocus={() => setActive(n.id)}
-              onBlur={() => setActive(null)}
-              style={{ transform: `translate(${x}px, ${y}px)` }}
-              className="absolute z-10 flex h-10 w-10 items-center justify-center rounded-full border transition-all"
-              data-state={isActive ? "active" : "idle"}
-            >
-              <span
-                className="absolute h-3 w-3 rounded-full transition-colors"
-                style={{
-                  background: isActive ? "var(--color-cyan)" : "var(--color-copper-highlight)",
-                  boxShadow: isActive ? "0 0 12px var(--color-cyan)" : "none",
-                }}
-              />
-              {isActive && (
-                <span className="absolute top-8 whitespace-nowrap rounded-md border border-white/10 bg-[var(--color-panel)] px-3 py-1 font-mono-brand text-xs text-[var(--color-silkscreen)]">
-                  {n.label}
-                  <span className="ml-2 text-[var(--color-muted)]">{n.sub}</span>
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="mt-12 max-w-xl text-center">
-        <h1 className="text-4xl font-semibold tracking-tight text-[var(--color-silkscreen)] sm:text-5xl">
-          411
-        </h1>
-        <p className="mt-4 text-[var(--color-muted)]">
-          An ecosystem of AI, web, embedded and IoT products, engineered from
-          the ground up — one circuit board at a time.
-        </p>
-        <div className="mt-8 flex justify-center gap-4">
-          <a href="#proof" className="rounded-full bg-[var(--color-silkscreen)] px-5 py-2.5 text-sm font-medium text-[var(--color-ground)]">
-            View work
-          </a>
-          <a href="#ecosystem" className="rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-[var(--color-silkscreen)]">
-            Explore the ecosystem
-          </a>
+        <div id="hero-stage" className="order-first flex items-center justify-start lg:order-none lg:justify-center">
+          <HeroRobotSvg />
         </div>
       </div>
     </section>
