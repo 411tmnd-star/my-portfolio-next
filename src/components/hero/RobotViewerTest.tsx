@@ -7,13 +7,13 @@ import * as THREE from "three";
 
 /* Viewer test for robot_v16.glb (Humanoid-Robot QA-003 close-out). Checks three things:
    it loads, the baked hello_sequence plays, and both thumbs sit right at a close camera.
-   Query params (for scripted checks): view=full|left|right, markers=1, play=0, t=<seconds>, sample=1. */
+   Query params (for scripted checks): view=full|head|left|right|right_back, markers=1, play=0, t=<seconds>, sample=1. */
 
 const MODEL = "/models/robot_v16.glb";
 const SAMPLE_FRAMES = [0, 20, 40, 60, 80]; // Blender frames at 30 fps
 const SOURCE_FPS = 30;
 
-type ViewName = "full" | "left" | "right" | "right_back";
+type ViewName = "full" | "head" | "left" | "right" | "right_back";
 type Info = { clips: { name: string; duration: number }[]; joints: number; skinnedMeshes: number };
 type Sample = Record<string, Record<string, [number, number, number]>>;
 
@@ -124,8 +124,13 @@ function Robot(props: {
   useFrame((_, dt) => {
     const at = (name: string, out: THREE.Vector3) => scene.getObjectByName(name)?.getWorldPosition(out);
     if (view === "full") {
-      v.goal.set(0, 1.05, 3.6);
-      v.lookGoal.set(0, 0.9, 0);
+      // The robot spans 0 to 2.34 m (head top 2.335 m, measured in Blender); at fov 35 this frames it with margin.
+      v.goal.set(0, 1.17, 4.2);
+      v.lookGoal.set(0, 1.17, 0);
+    } else if (view === "head") {
+      // Head spans 1.88 to 2.34 m; from 1.6 m away the vertical view is about 1 m, so it fits with the neck.
+      v.goal.set(0, 2.1, 1.6);
+      v.lookGoal.set(0, 2.1, 0.07);
     } else {
       const s = view === "left" ? "_L" : "";
       const w = at("DEF_Wrist" + s, v.a);
@@ -211,6 +216,9 @@ export default function RobotViewerTest() {
           <hemisphereLight args={["#bcd4ff", "#2a2620", 1.1]} />
           <directionalLight position={[2, 3, 4]} intensity={2.2} />
           <directionalLight position={[-3, 1.5, 2]} intensity={0.9} color="#9fd8ff" />
+          {/* Rim lights: the head and neck use near-black materials and vanish against the dark background without them. */}
+          <directionalLight position={[0, 3, -4]} intensity={2.4} color="#9fd8ff" />
+          <directionalLight position={[0, 4, 2]} intensity={1.4} />
           <Suspense fallback={null}>
             <Robot
               view={view}
@@ -229,9 +237,9 @@ export default function RobotViewerTest() {
 
       <div className="pointer-events-none absolute left-4 top-4 flex flex-col gap-2 text-xs text-[var(--color-silkscreen)]">
         <div className="pointer-events-auto flex flex-wrap gap-2">
-          {(["full", "left", "right", "right_back"] as ViewName[]).map((n) => (
+          {(["full", "head", "left", "right", "right_back"] as ViewName[]).map((n) => (
             <button key={n} className={btn(view === n)} onClick={() => setView(n)}>
-              {{ full: "Full body", left: "Left hand", right: "Right hand", right_back: "Right hand (back)" }[n]}
+              {{ full: "Full body", head: "Head", left: "Left hand", right: "Right hand", right_back: "Right hand (back)" }[n]}
             </button>
           ))}
           <button className={btn(playing)} onClick={() => setPlaying((p) => !p)}>
