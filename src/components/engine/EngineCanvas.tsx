@@ -70,6 +70,10 @@ function LockedCamera() {
   return null;
 }
 
+/** Parts of a mark more see-through than this (unlit segments) stay off the stage: overlapped they would give
+ *  the final pass a silhouette that the clay and wire passes do not have. */
+const SOLID = 0.5;
+
 /** Multiplies the opacity of whatever is inside, for any mark, without knowing its materials. */
 export function setGroupOpacity(group: Group, value: number): void {
   group.visible = value > 0.004;
@@ -79,6 +83,7 @@ export function setGroupOpacity(group: Group, value: number): void {
       m.userData.baseOpacity ??= m.opacity;
       m.transparent = true;
       m.opacity = m.userData.baseOpacity * value;
+      o.visible = m.userData.baseOpacity >= SOLID;
     }
   });
 }
@@ -106,12 +111,13 @@ export function HubMark({ opacityRef, scaleRef, progressRef, reduced }: {
   );
 }
 
-function Scene({ query, onFirstFrame, labels }: {
+function Scene({ query, visible, onFirstFrame, labels }: {
   query: EngineQuery;
+  visible: boolean;
   onFirstFrame: () => void;
   labels: (opacity: number[], lit: number[]) => void;
 }) {
-  const { progressRef, handoffRef, hubPresenceRef, markHostRef, reduced } = useDock();
+  const { progressRef, handoffRef, hubPresenceRef, markHostRef, wakeRef, reduced } = useDock();
   const { gl, scene, camera, invalidate, size } = useThree();
   const engine = useMemo(() => {
     const css = typeof document === "undefined" ? "" : getComputedStyle(document.body).getPropertyValue("--font-jetbrains-mono").trim();
@@ -186,12 +192,10 @@ function Scene({ query, onFirstFrame, labels }: {
         if (pass !== "final") {
           hub.traverse((o) => {
             if (!(o instanceof Mesh)) return;
+            if (!o.visible) return;
             swap.set(o, o.material);
-            if ((o.material as Material).opacity < 0.5) o.visible = false; // unlit segments are see-through in the final pass
-            else {
-              o.material = engine.passMaterial(pass);
-              if (pass === "wire") engine.addWire(o);
-            }
+            o.material = engine.passMaterial(pass);
+            if (pass === "wire") engine.addWire(o);
           });
         }
         gl.render(scene, camera);
@@ -209,10 +213,7 @@ function Scene({ query, onFirstFrame, labels }: {
           ctx.drawImage(gl.domElement, 0, 0, width, height);
         }
         const url = out.toDataURL("image/png");
-        for (const [o, m] of swap) {
-          o.material = m;
-          o.visible = true;
-        }
+        for (const [o, m] of swap) o.material = m;
         engine.setPass(query.pass);
         gl.setPixelRatio(saved.pr);
         gl.setSize(saved.w, saved.h, false);
@@ -225,6 +226,15 @@ function Scene({ query, onFirstFrame, labels }: {
       delete window.__engine;
     };
   }, [camera, engine, gl, invalidate, query, scene, size]);
+
+  // Frames are drawn on demand: on scroll, and one after another while the loop is running and on screen.
+  useEffect(() => {
+    wakeRef.current = () => invalidate();
+    if (visible) invalidate();
+    return () => {
+      wakeRef.current = null;
+    };
+  }, [invalidate, visible, wakeRef]);
 
   useFrame((_, delta) => {
     const handoff = handoffRef.current ?? 0;
@@ -249,6 +259,8 @@ function Scene({ query, onFirstFrame, labels }: {
       if (markHostRef.current && handoff > 0) markHostRef.current.style.opacity = String(1 - handoff * hubPresenceRef.current);
     }
     labels(s.stations.map((x) => Math.min(1, x.scale)), s.stations.map((x) => x.lit));
+    const running = query.t === null && ((progressRef.current ?? 0) >= HANDOFF_START || time.current !== IDLE_TIME);
+    if (visible && running) invalidate();
     if (!told.current) {
       told.current = true;
       requestAnimationFrame(onFirstFrame);
@@ -288,9 +300,9 @@ export default function EngineCanvas({ onFirstFrame, labels }: {
         dpr={[1, 1.75]}
         camera={{ position: EYE, near: 0.1, far: CAMERA_DISTANCE * 2.5 }}
         gl={{ alpha: true, antialias: true, preserveDrawingBuffer: query.t !== null || query.debug, toneMapping: NoToneMapping }}
-        frameloop={query.t !== null ? "demand" : visible ? "always" : "never"}
+        frameloop="demand"
       >
-        <Scene query={query} onFirstFrame={onFirstFrame} labels={labels} />
+        <Scene query={query} visible={visible} onFirstFrame={onFirstFrame} labels={labels} />
       </Canvas>
     </div>
   );

@@ -286,6 +286,8 @@ details.spec > summary::-webkit-details-marker {
   aspect-ratio: 2.1 / 1;
 }
 .hero-copy {
+  position: relative;
+  z-index: 2; /* the mark rides down behind the words */
   flex: none;
   text-align: center;
 }
@@ -501,13 +503,6 @@ details.spec > summary::-webkit-details-marker {
   }
   .engine[data-mode="live"] .engine-stations li[data-side="right"] {
     transform: translate(34px, -60%);
-  }
-  .engine[data-mode="live"] .engine-stations li[data-side="up"] {
-    transform: translate(-50%, calc(-100% - 10px));
-    text-align: center;
-  }
-  .engine[data-mode="live"] .engine-stations li[data-side="up"] a {
-    align-items: center;
   }
   .engine[data-mode="live"] .engine-stations a {
     padding: 7px 11px;

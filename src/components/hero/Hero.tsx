@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { HERO } from "@/content/site";
-import { HERO_VIEW, dockTransform, handoffOf, progressOf, type Rect } from "./dockMath";
+import { HERO_VIEW, dockTransform, handoffOf, posterFade, progressOf, type Rect } from "./dockMath";
 import { useAfterPaint, useDock } from "./DockProgress";
 import { FlatMark } from "./SegmentDigitFlat";
 
@@ -19,7 +19,7 @@ const pageRect = (el: Element): Rect => {
  * Nothing is pinned. progress = scrollY / heroHeight, and the mark rides down to the hub on the stage.
  */
 export default function Hero() {
-  const { progressRef, handoffRef, hubPresenceRef, markHostRef, badgeHostRef, stageRef, hubRef, mode, reduced } = useDock();
+  const { progressRef, handoffRef, hubPresenceRef, markHostRef, wakeRef, badgeHostRef, stageRef, hubRef, mode, reduced } = useDock();
   const heroRef = useRef<HTMLElement>(null);
   const zoneRef = useRef<HTMLDivElement>(null);
   const after = useAfterPaint(mode === "live");
@@ -50,8 +50,9 @@ export default function Hero() {
       if (!reduced && from && to) {
         const t = dockTransform(from, to, frameHeight, progress);
         host.style.transform = `translate3d(${t.x}px, ${t.y}px, 0) scale(${t.scale})`;
-        host.style.opacity = String(1 - handoff * (hubPresenceRef.current ?? 1));
+        host.style.opacity = String(mode === "poster" ? posterFade(progress) : 1 - handoff * (hubPresenceRef.current ?? 1));
       }
+      wakeRef.current?.();
       const badge = badgeHostRef.current;
       if (badge) badge.style.opacity = window.scrollY > stageBottom ? "1" : "0";
     };
@@ -77,7 +78,7 @@ export default function Hero() {
       window.removeEventListener("scroll", onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [badgeHostRef, handoffRef, hubPresenceRef, hubRef, markHostRef, progressRef, reduced, stageRef]);
+  }, [badgeHostRef, handoffRef, hubPresenceRef, hubRef, markHostRef, mode, progressRef, reduced, stageRef, wakeRef]);
 
   return (
     <section id="top" ref={heroRef} data-testid="hero" className="hero">

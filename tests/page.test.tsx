@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { VIEW_HEIGHT, HUB_SCALE } from "@/components/engine/layout";
 import { StaticPipeline } from "@/components/engine/StaticPipeline";
 import { DockedMarkBadge } from "@/components/hero/DockedMarkBadge";
-import { dockTransform, handoffOf, HERO_VIEW, progressOf, travel } from "@/components/hero/dockMath";
+import { dockTransform, handoffOf, HERO_VIEW, posterFade, progressOf, travel } from "@/components/hero/dockMath";
 import { DockProgressProvider } from "@/components/hero/DockProgress";
 import Hero from "@/components/hero/Hero";
 import { FlatMark } from "@/components/hero/SegmentDigitFlat";
@@ -134,6 +134,9 @@ describe("dock maths", () => {
   it("hands over from 0.85", () => {
     expect([handoffOf(0), handoffOf(0.85), handoffOf(1)]).toEqual([0, 0, 1]);
     expect(handoffOf(0.925)).toBeCloseTo(0.5);
+  });
+  it("fades before the poster would show the mark twice", () => {
+    expect([posterFade(0), posterFade(0.5), posterFade(0.8), posterFade(1)]).toEqual([1, 1, expect.closeTo(0, 9), 0]);
   });
   it("starts in place and ends on the hub at the hub's size", () => {
     expect(dockTransform(zone, hub, 760, 0)).toEqual({ x: 0, y: 0, scale: 1 });

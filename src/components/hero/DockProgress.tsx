@@ -19,6 +19,8 @@ type DockValue = {
   /** 1 while the stage's own mark can take over, 0 while the loop has it down. */
   hubPresenceRef: RefObject<number>;
   markHostRef: RefObject<HTMLDivElement | null>;
+  /** Set by the stage: draws a frame. Called from the one scroll handler, so the stage can sleep otherwise. */
+  wakeRef: RefObject<(() => void) | null>;
   badgeHostRef: RefObject<HTMLDivElement | null>;
   stageRef: RefObject<HTMLElement | null>;
   hubRef: RefObject<HTMLDivElement | null>;
@@ -44,6 +46,7 @@ export function DockProgressProvider({ children }: { children: ReactNode }) {
   const handoffRef = useRef(0);
   const hubPresenceRef = useRef(1);
   const markHostRef = useRef<HTMLDivElement | null>(null);
+  const wakeRef = useRef<(() => void) | null>(null);
   const badgeHostRef = useRef<HTMLDivElement | null>(null);
   const stageRef = useRef<HTMLElement | null>(null);
   const hubRef = useRef<HTMLDivElement | null>(null);
@@ -58,7 +61,7 @@ export function DockProgressProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo<DockValue>(
-    () => ({ progressRef, handoffRef, hubPresenceRef, markHostRef, badgeHostRef, stageRef, hubRef, mode, reduced }),
+    () => ({ progressRef, handoffRef, hubPresenceRef, markHostRef, wakeRef, badgeHostRef, stageRef, hubRef, mode, reduced }),
     [mode, reduced],
   );
   return <DockContext.Provider value={value}>{children}</DockContext.Provider>;

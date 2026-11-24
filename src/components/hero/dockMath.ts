@@ -17,6 +17,12 @@ export function handoffOf(progress: number): number {
   return clamp01((progress - HANDOFF_START) / (1 - HANDOFF_START));
 }
 
+/** Where there is only a picture of the stage, the 411 is already in it: the travelling mark is gone before it
+ *  would show twice. */
+export function posterFade(progress: number): number {
+  return 1 - clamp01((progress - 0.5) / 0.3);
+}
+
 /** Slow start, slow finish: the mark leaves gently and settles. */
 export const travel = (p: number) => p * p * (3 - 2 * p);
 

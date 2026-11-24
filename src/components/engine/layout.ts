@@ -61,14 +61,14 @@ export type StationSlot = {
   /** Height of the label anchor above the board. */
   labelY: number;
   /** Which way the label grows from its anchor. */
-  side: "left" | "right" | "up";
+  side: "left" | "right";
 };
 
 /** In path order. Which of them are shown is decided by content/projects.ts. */
 export const STATION_SLOTS: StationSlot[] = [
   { id: "maximus-character-rig", at: { x: -4.1, z: 0.9 }, from: { x: -2.9, z: 0.9 }, labelY: 0.5, side: "left" },
   { id: "maximus-garment-physics", at: { x: -0.8, z: 4.25 }, from: { x: -0.8, z: 3.2 }, labelY: -0.2, side: "left" },
-  { id: "better-style-asset-pipeline", at: { x: -0.5, z: 0.5 }, from: { x: 1.1, z: 0.5 }, labelY: 1.15, side: "up" },
+  { id: "better-style-asset-pipeline", at: { x: -0.5, z: 0.5 }, from: { x: 1.1, z: 0.5 }, labelY: 1.5, side: "right" },
   { id: "audio-lab", at: { x: 2.3, z: -4.0 }, from: { x: 2.3, z: -2.6 }, labelY: 1.2, side: "right" },
   { id: "humanoid-robot", at: { x: 2.25, z: 1.5 }, from: { x: 3.5, z: 1.5 }, labelY: 1.35, side: "right" },
 ];
