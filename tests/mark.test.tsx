@@ -45,6 +45,37 @@ describe("mark slot", () => {
     for (const list of all) expect(list).toEqual(expect.arrayContaining(["mark-slot", "stub-mark"]));
   });
 
+  it("swings the hero and badge marks and never turns them far enough to read backwards", async () => {
+    const { Hero3DScene } = await import("@/components/hero/Hero3DScene");
+    const { BadgeScene } = await import("@/components/hero/BadgeScene");
+    const props = { accent: "#E08030", reduced: false };
+    const scenes = [
+      ...[0, 0.5, 1].map((p) => <Hero3DScene key={p} {...props} progressRef={num(p)} />),
+      <BadgeScene key="badge" {...props} progressRef={num(1)} hoverRef={createRef() as never} />,
+    ];
+    const ranges: number[] = [];
+    for (const scene of scenes) {
+      const r = await ReactThreeTestRenderer.create(scene);
+      const mark = (r.scene.instance as unknown as Object3D).getObjectByName("mark-slot") as Object3D;
+      const facing: number[] = [];
+      const yaws: number[] = [];
+      for (let i = 0; i < 400; i++) {
+        await r.advanceFrames(1, 0.1); // 40 s in all, about six hero swings
+        mark.updateWorldMatrix(true, false);
+        const front = new Vector3(0, 0, 1).transformDirection(mark.matrixWorld);
+        facing.push(front.z);
+        yaws.push(Math.atan2(front.x, front.z));
+      }
+      // cos 60: digits are still clearly legible. A full turn would reach -1.
+      expect(Math.min(...facing)).toBeGreaterThan(0.5);
+      ranges.push(Math.max(...yaws) - Math.min(...yaws));
+      await r.unmount();
+    }
+    // Both resting states really swing, to both sides.
+    expect(ranges[0]).toBeGreaterThan(1.1);
+    expect(ranges[3]).toBeGreaterThan(1.1);
+  });
+
   it("ships the segment mark, and keeps the board mark behind a lazy import", async () => {
     const real = await vi.importActual<typeof import("@/components/mark/MarkSlot")>("@/components/mark/MarkSlot");
     expect(real.ACTIVE_MARK).toBe("segment");

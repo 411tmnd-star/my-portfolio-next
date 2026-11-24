@@ -5,15 +5,10 @@ import { type RefObject, useRef } from "react";
 import type { Group, PerspectiveCamera } from "three";
 import { ISO_TILT, ISO_YAW } from "@/components/engine/layout";
 import { MarkSlot } from "@/components/mark/MarkSlot";
+import { swing } from "@/components/mark/swing";
 import { HERO_CAMERA, HERO_VIEW } from "./dockMath";
 
-export const BASE_SPIN_SPEED = 0.6; // radians per second at the very top of the page
-const TURN = Math.PI * 2;
-
-/** Shortest signed way from one angle to another. */
-export function shortest(from: number, to: number): number {
-  return ((((to - from) % TURN) + TURN * 1.5) % TURN) - Math.PI;
-}
+const SWING_SPEED = 1; // phase per second at the very top of the page: one full swing in 6.3 s
 
 /** 0 until the dock begins to bite, 1 when the mark has taken the stage's angle. */
 export function settle(progress: number): number {
@@ -22,21 +17,22 @@ export function settle(progress: number): number {
 }
 
 /**
- * The travelling mark. Spins at the top of the page, slows as the visitor scrolls, and turns to the stage's
+ * The travelling mark. Swings at the top of the page, always readable, slows as the visitor scrolls, and turns to the stage's
  * isometric angle on the way. Reads progress from a ref each frame, so scrolling never re-renders React.
  */
 export function Hero3DScene({ progressRef, accent, reduced }: { progressRef: RefObject<number>; accent: string; reduced: boolean }) {
   const outer = useRef<Group>(null);
-  const spin = useRef(0);
+  const phase = useRef(0);
 
   useFrame(({ camera }, delta) => {
     const group = outer.current;
     if (!group) return;
     const progress = progressRef.current ?? 0;
-    if (!reduced) spin.current += Math.min(delta, 0.1) * BASE_SPIN_SPEED * (1 - progress);
+    if (!reduced) phase.current += Math.min(delta, 0.1) * SWING_SPEED * (1 - progress);
     const k = settle(progress);
     group.rotation.x = ISO_TILT * k;
-    group.rotation.y = spin.current + shortest(spin.current, ISO_YAW) * k;
+    const yaw = swing(phase.current);
+    group.rotation.y = yaw + (ISO_YAW - yaw) * k;
     // Pull back and narrow the lens together: the mark keeps its size and loses its perspective, so it
     // arrives looking the way the stage's parallel camera sees it.
     const lens = camera as PerspectiveCamera;
