@@ -8,7 +8,7 @@ const compat = new FlatCompat({ baseDirectory: __dirname });
 // ESLint 9 flat config (replaces .eslintrc.json, which ESLint 9 ignores).
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
-  { ignores: ["node_modules/**", ".next/**", "out/**", "next-env.d.ts", "docs/**"] },
+  { ignores: ["node_modules/**", ".next/**", "out/**", "next-env.d.ts", "docs/**", "public/**"] },
 ];
 
 export default eslintConfig;
