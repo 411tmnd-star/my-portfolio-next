@@ -7,12 +7,12 @@ const OG_DESC =
   "Embedded C/C++, TinyML load recognition and IoT telemetry — an intelligence layer between the meter and the building, engineered for unreliable power infrastructure.";
 
 export const metadata: Metadata = {
-  title: "VoltaEdge AI — Edge Energy Intelligence | 411 Ecosystem",
+  title: "VoltaEdge AI (earlier concept work) | Michael Ikhine",
   description:
     "VoltaEdge AI — Edge intelligence and energy management platform engineered for unreliable power infrastructure by Michael Ikhine.",
   alternates: { canonical: "/voltaedge" },
   openGraph: {
-    siteName: "411 Ecosystem",
+    siteName: "Michael Ikhine",
     title: "VoltaEdge AI — Edge Energy Intelligence",
     description: OG_DESC,
     type: "article",

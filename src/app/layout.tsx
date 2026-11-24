@@ -19,11 +19,10 @@ const jetbrainsMono = localFont({
   display: "swap",
 });
 
-const TITLE = "411 — Localized AI, Web & Connected Hardware | Michael Ikhine";
+const TITLE = `${SITE.owner} | ${SITE.role}`;
 const DESCRIPTION =
-  "411 is an ecosystem of web applications, UI/UX design, and connected IoT hardware engineered in Nigeria by Michael Ikhine, with localized AI systems in active development.";
-const SOCIAL_DESCRIPTION =
-  "Web applications, UI/UX design, and embedded IoT hardware engineered in Nigeria — with localized AI systems in development.";
+  "Character rigs, cloth checks, asset pipelines and browser 3D in Python, Blender and Three.js. Five public projects, every number linked to its proof.";
+const OG_ALT = `${SITE.owner}, ${SITE.role}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -33,8 +32,8 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
   openGraph: {
     siteName: SITE.name,
-    title: "411 Ecosystem — AI, Web & Connected Hardware | Michael Ikhine",
-    description: SOCIAL_DESCRIPTION,
+    title: TITLE,
+    description: DESCRIPTION,
     type: "website",
     locale: SITE.locale,
     url: "/",
@@ -44,15 +43,15 @@ export const metadata: Metadata = {
         type: "image/png",
         width: 1200,
         height: 630,
-        alt: "411 Ecosystem — AI, UI/UX, and Connected Hardware by Michael Ikhine",
+        alt: OG_ALT,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "411 Ecosystem — AI, Web & Connected Hardware",
-    description: SOCIAL_DESCRIPTION,
-    images: [{ url: "/og-card.png", alt: "411 Ecosystem — AI, UI/UX, and Connected Hardware by Michael Ikhine" }],
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [{ url: "/og-card.png", alt: OG_ALT }],
   },
 };
 

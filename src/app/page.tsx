@@ -1,66 +1,45 @@
-import Nav from "@/components/sections/Nav";
-import Hero from "@/components/sections/Hero";
-import Capability from "@/components/sections/Capability";
-import Services from "@/components/sections/Services";
-import About from "@/components/sections/About";
-import Ecosystem from "@/components/sections/Ecosystem";
-import Work from "@/components/sections/Work";
-import Loop, { REEL } from "@/components/sections/Loop";
+import { DockedMarkBadge } from "@/components/hero/DockedMarkBadge";
+import { DockProgressProvider } from "@/components/hero/DockProgress";
+import Hero from "@/components/hero/Hero";
 import Contact from "@/components/sections/Contact";
-import { SERVICES, SITE } from "@/content/site";
+import HowIWork from "@/components/sections/HowIWork";
+import Loop from "@/components/sections/Loop";
+import Nav from "@/components/sections/Nav";
+import Process from "@/components/sections/Process";
+import Projects from "@/components/sections/Projects";
+import { READY_PROJECTS } from "@/content/projects";
+import { SITE } from "@/content/site";
 
-/* Person, not Organization: this is a personal portfolio. Every claim here
-   is already stated in the visible copy. */
+/* Person, not Organization: a personal portfolio. Every claim here is in the visible copy. */
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: SITE.owner,
-  jobTitle: "Software & Hardware Developer",
-  description:
-    "Software and hardware developer building the 411 ecosystem — web applications, UI/UX design, and embedded IoT systems, with localized AI systems in development.",
+  jobTitle: SITE.role,
+  description: "Builds character rigs, cloth checks, asset pipelines and browser 3D in Python, Blender and Three.js, with proof files in public repositories.",
   url: `${SITE.url}/`,
   image: `${SITE.url}/og-card.png`,
   email: `mailto:${SITE.email}`,
   address: { "@type": "PostalAddress", addressCountry: "NG" },
   sameAs: [SITE.github],
-  knowsAbout: [
-    "UI/UX Design",
-    "Web Application Development",
-    "Embedded C/C++",
-    "IoT Sensors and Gateways",
-    "Microcontrollers",
-    "AutoCAD 3D Prototyping",
-    "AI Integration",
-    "Robotics",
-  ],
-  makesOffer: SERVICES.items.map((s) => ({
-    "@type": "Offer",
-    itemOffered: { "@type": "Service", name: s.name },
-  })),
+  knowsAbout: ["Python", "Blender Python", "3D technical art", "Character rigging", "Cloth simulation", "Three.js", "WebGL", "Asset pipelines", "Audio-reactive graphics"],
+  subjectOf: READY_PROJECTS.map((p) => ({ "@type": "SoftwareSourceCode", name: p.title, codeRepository: p.repo })),
 };
 
-/*
- * Section order matches the live site. Process (wireframe → clay → final)
- * stays unmounted until real renders exist; the reel mounts once REEL.ready.
- */
 export default function Home() {
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
-      />
+    <DockProgressProvider>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }} />
       <Nav />
+      <DockedMarkBadge />
       <main>
         <Hero />
-        <Capability />
-        {REEL.ready && <Loop />}
-        <Services />
-        <About />
-        <Ecosystem />
-        <Work />
+        <Loop />
+        <Projects />
+        <Process />
+        <HowIWork />
         <Contact />
       </main>
-    </>
+    </DockProgressProvider>
   );
 }

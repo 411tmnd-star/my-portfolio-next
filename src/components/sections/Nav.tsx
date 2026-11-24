@@ -4,21 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { NAV_LINKS } from "@/content/site";
 
-function StatusDot({ inMenu = false }: { inMenu?: boolean }) {
-  return (
-    <span
-      className={
-        inMenu
-          ? "mt-1 inline-flex w-full items-center gap-2 border-t border-[var(--color-line)] pt-3.5 font-mono-brand text-[11.5px] text-[var(--color-muted)]"
-          : "hidden items-center gap-2 whitespace-nowrap rounded-full border border-[var(--color-line)] px-3 py-1.5 font-mono-brand text-[11.5px] text-[var(--color-muted)] md:inline-flex"
-      }
-    >
-      <span className="h-[7px] w-[7px] rounded-full bg-[var(--color-cyan)] shadow-[0_0_8px_var(--color-cyan)]" />
-      Available for projects
-    </span>
-  );
-}
-
 /**
  * Sticky header with an accessible mobile drawer — same wiring as the live
  * site: aria-expanded/aria-controls, closes on link, outside click, Escape,
@@ -57,30 +42,28 @@ export default function Nav({ variant = "home" }: { variant?: "home" | "sub" }) 
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--color-line)] bg-[var(--color-ground)]/90 backdrop-blur-md">
+    <header className={`${variant === "home" ? "fixed inset-x-0" : "sticky"} top-0 z-50 border-b border-[var(--color-line)] bg-[var(--color-ground)]/90 backdrop-blur-md`}>
       <nav ref={navRef} aria-label="Main Navigation" className="flex items-center justify-between px-[max(16px,6vw)] py-4">
         <Link href="/" className="flex flex-col leading-tight no-underline">
-          <span className="text-[22px] font-bold tracking-tight text-[var(--color-cyan)]">411</span>
+          <span className="text-[22px] font-bold tracking-tight text-[var(--color-amber)]">411</span>
           <span className="font-mono-brand text-[10px] uppercase tracking-[0.1em] text-[var(--color-muted)]">
             by Michael Ikhine
           </span>
         </Link>
 
         {variant === "sub" ? (
-          <Link href="/" className="font-mono-brand text-[12.5px] text-[var(--color-muted)] transition-colors hover:text-[var(--color-cyan)]">
+          <Link href="/" className="font-mono-brand text-[12.5px] text-[var(--color-muted)] transition-colors hover:text-[var(--color-silkscreen)]">
             ← Back to Portfolio
           </Link>
         ) : (
           <>
             <div className="hidden gap-[26px] text-[13.5px] md:flex">
               {NAV_LINKS.map((l) => (
-                <a key={l.href} href={l.href} className="text-[var(--color-muted)] transition-colors hover:text-[var(--color-cyan)]">
+                <a key={l.href} href={l.href} className="text-[var(--color-muted)] transition-colors hover:text-[var(--color-silkscreen)]">
                   {l.label}
                 </a>
               ))}
             </div>
-
-            <StatusDot />
 
             <button
               ref={btnRef}
@@ -110,7 +93,6 @@ export default function Nav({ variant = "home" }: { variant?: "home" | "sub" }) 
               {l.label}
             </a>
           ))}
-          <StatusDot inMenu />
         </div>
       )}
     </header>
